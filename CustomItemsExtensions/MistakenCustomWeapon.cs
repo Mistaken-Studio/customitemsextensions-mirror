@@ -15,15 +15,15 @@ namespace Mistaken.API.CustomItems
     {
         /// <inheritdoc cref="CustomItem.Get(int)"/>
         public static CustomItem Get(MistakenCustomItems customItem)
-            => Get((int)customItem) as MistakenCustomItem;
+            => Get((int)customItem) as MistakenCustomWeapon;
 
         /// <inheritdoc cref="CustomItem.TryGet(int, out Exiled.CustomItems.API.Features.CustomItem)"/>
-        public static bool TryGet(MistakenCustomItems id, out MistakenCustomItem customItem)
+        public static bool TryGet(MistakenCustomItems id, out MistakenCustomWeapon customItem)
         {
             customItem = null;
             if (!TryGet((int)id, out CustomItem customItem1))
                 return false;
-            customItem = customItem1 as MistakenCustomItem;
+            customItem = customItem1 as MistakenCustomWeapon;
             return true;
         }
 
@@ -56,7 +56,7 @@ namespace Mistaken.API.CustomItems
         {
             base.UnsubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
-            Events.Handlers.CustomEvents.UnloadingFirearm -= this.OnInternalUnloadingFirearm;
+            Events.Handlers.CustomEvents.UnloadingWeapon -= this.OnInternalUnloadingFirearm;
         }
 
         /// <inheritdoc/>
@@ -64,7 +64,7 @@ namespace Mistaken.API.CustomItems
         {
             base.SubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
-            Events.Handlers.CustomEvents.UnloadingFirearm += this.OnInternalUnloadingFirearm;
+            Events.Handlers.CustomEvents.UnloadingWeapon += this.OnInternalUnloadingFirearm;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
@@ -74,7 +74,7 @@ namespace Mistaken.API.CustomItems
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.UnloadingFirearm"/>
-        protected virtual void OnUnloadingFirearm(Events.EventArgs.UnloadingFirearmEventArgs ev)
+        protected virtual void OnUnloadingFirearm(Events.EventArgs.UnloadingWeaponEventArgs ev)
         {
         }
 
@@ -84,7 +84,7 @@ namespace Mistaken.API.CustomItems
                 this.OnChangingAttachments(ev);
         }
 
-        private void OnInternalUnloadingFirearm(Events.EventArgs.UnloadingFirearmEventArgs ev)
+        private void OnInternalUnloadingFirearm(Events.EventArgs.UnloadingWeaponEventArgs ev)
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
                 this.OnUnloadingFirearm(ev);

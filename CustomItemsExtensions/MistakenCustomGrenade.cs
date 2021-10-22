@@ -15,15 +15,15 @@ namespace Mistaken.API.CustomItems
     {
         /// <inheritdoc cref="CustomItem.Get(int)"/>
         public static CustomItem Get(MistakenCustomItems customItem)
-            => Get((int)customItem) as MistakenCustomItem;
+            => Get((int)customItem) as MistakenCustomGrenade;
 
         /// <inheritdoc cref="CustomItem.TryGet(int, out Exiled.CustomItems.API.Features.CustomItem)"/>
-        public static bool TryGet(MistakenCustomItems id, out MistakenCustomItem customItem)
+        public static bool TryGet(MistakenCustomItems id, out MistakenCustomGrenade customItem)
         {
             customItem = null;
             if (!TryGet((int)id, out CustomItem customItem1))
                 return false;
-            customItem = customItem1 as MistakenCustomItem;
+            customItem = customItem1 as MistakenCustomGrenade;
             return true;
         }
 
