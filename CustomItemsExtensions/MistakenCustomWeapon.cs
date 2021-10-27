@@ -56,7 +56,7 @@ namespace Mistaken.API.CustomItems
         {
             base.UnsubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
-            Events.Handlers.CustomEvents.UnloadingWeapon -= this.OnInternalUnloadingFirearm;
+            Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
         }
 
         /// <inheritdoc/>
@@ -64,7 +64,7 @@ namespace Mistaken.API.CustomItems
         {
             base.SubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
-            Events.Handlers.CustomEvents.UnloadingWeapon += this.OnInternalUnloadingFirearm;
+            Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
@@ -73,8 +73,8 @@ namespace Mistaken.API.CustomItems
             ev.IsAllowed = this.AllowChangingAttachments;
         }
 
-        /// <inheritdoc cref="Events.Handlers.CustomEvents.UnloadingFirearm"/>
-        protected virtual void OnUnloadingFirearm(Events.EventArgs.UnloadingWeaponEventArgs ev)
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.UnloadingWeapon"/>
+        protected virtual void OnUnloadingWeapon(Exiled.Events.EventArgs.UnloadingWeaponEventArgs ev)
         {
         }
 
@@ -84,10 +84,10 @@ namespace Mistaken.API.CustomItems
                 this.OnChangingAttachments(ev);
         }
 
-        private void OnInternalUnloadingFirearm(Events.EventArgs.UnloadingWeaponEventArgs ev)
+        private void OnInternalUnloadingWeapon(Exiled.Events.EventArgs.UnloadingWeaponEventArgs ev)
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
-                this.OnUnloadingFirearm(ev);
+                this.OnUnloadingWeapon(ev);
         }
     }
 }
