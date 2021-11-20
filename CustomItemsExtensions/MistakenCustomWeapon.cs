@@ -7,6 +7,8 @@
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs;
+using Mistaken.API.Extensions;
+using Mistaken.API.GUI;
 using UnityEngine;
 
 namespace Mistaken.API.CustomItems
@@ -56,6 +58,11 @@ namespace Mistaken.API.CustomItems
         /// Gets a value indicating whether item is equipped.
         /// </summary>
         public bool IsEquiped { get; private set; }
+
+        /// <summary>
+        /// Gets or sets display name shown on player's GUI.
+        /// </summary>
+        public virtual string DisplayName { get; set; }
 
         /// <inheritdoc/>
         protected override void UnsubscribeEvents()
@@ -112,6 +119,12 @@ namespace Mistaken.API.CustomItems
             {
                 this.IsEquiped = false;
                 this.OnHiding(ev);
+                ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
+            }
+            else if (this.Check(ev.NewItem))
+            {
+                if (this.DisplayName != null)
+                    ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, $"<color=yellow>Trzymasz</color> {this.DisplayName}");
             }
         }
     }
