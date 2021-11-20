@@ -6,6 +6,7 @@
 
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
+using Exiled.Events.EventArgs;
 using UnityEngine;
 
 namespace Mistaken.API.CustomItems
@@ -43,6 +44,42 @@ namespace Mistaken.API.CustomItems
         {
             get => (uint)this.CustomItem;
             set => _ = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether item is equipped.
+        /// </summary>
+        public bool IsEquiped { get; private set; }
+
+        /// <inheritdoc/>
+        protected override void SubscribeEvents()
+        {
+            base.SubscribeEvents();
+            Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
+        }
+
+        /// <inheritdoc/>
+        protected override void UnsubscribeEvents()
+        {
+            base.UnsubscribeEvents();
+            Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
+        }
+
+        /// <summary>
+        /// Fired when item is deequpied.
+        /// </summary>
+        /// <param name="ev">EventArgs.</param>
+        protected virtual void OnHiding(ChangingItemEventArgs ev)
+        {
+        }
+
+        private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
+        {
+            if (this.Check(ev.Player.CurrentItem))
+            {
+                this.IsEquiped = false;
+                this.OnHiding(ev);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
 
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
+using Exiled.Events.EventArgs;
 using UnityEngine;
 
 namespace Mistaken.API.CustomItems
@@ -51,12 +52,18 @@ namespace Mistaken.API.CustomItems
         /// </summary>
         public virtual bool AllowChangingAttachments { get; } = true;
 
+        /// <summary>
+        /// Gets a value indicating whether item is equipped.
+        /// </summary>
+        public bool IsEquiped { get; private set; }
+
         /// <inheritdoc/>
         protected override void UnsubscribeEvents()
         {
             base.UnsubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
+            Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
         }
 
         /// <inheritdoc/>
@@ -65,6 +72,7 @@ namespace Mistaken.API.CustomItems
             base.SubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
+            Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
@@ -78,6 +86,14 @@ namespace Mistaken.API.CustomItems
         {
         }
 
+        /// <summary>
+        /// Fired when item is deequpied.
+        /// </summary>
+        /// <param name="ev">EventArgs.</param>
+        protected virtual void OnHiding(ChangingItemEventArgs ev)
+        {
+        }
+
         private void OnInternalChangingAttachments(Events.EventArgs.ChangingAttachmentsEventArgs ev)
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
@@ -88,6 +104,15 @@ namespace Mistaken.API.CustomItems
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
                 this.OnUnloadingWeapon(ev);
+        }
+
+        private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
+        {
+            if (this.Check(ev.Player.CurrentItem))
+            {
+                this.IsEquiped = false;
+                this.OnHiding(ev);
+            }
         }
     }
 }
