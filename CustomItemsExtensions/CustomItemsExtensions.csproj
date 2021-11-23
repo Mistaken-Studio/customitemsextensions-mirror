@@ -57,6 +57,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="IMistakenCustomItem.cs" />
     <Compile Include="MistakenCustomGrenade.cs" />
+    <Compile Include="MistakenCustomKeycard.cs" />
     <Compile Include="MistakenCustomItem.cs" />
     <Compile Include="MistakenCustomItems.cs" />
     <Compile Include="MistakenCustomWeapon.cs" />
