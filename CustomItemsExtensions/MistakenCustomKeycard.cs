@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="MistakenCustomKeycard.cs" company="Mistaken">
 // Copyright (c) Mistaken. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ namespace Mistaken.API.CustomItems
     {
         /// <summary>
         /// Gets or sets Keycards custom permissions.
-        /// Set to <see langword="null"/> to ignore and usa base keycard permissions.
+        /// Set to <see langword="null"/> to ignore and use base keycard's permissions.
         /// </summary>
         public virtual KeycardPermissions? KeycardPermissions { get; set; } = null;
 
