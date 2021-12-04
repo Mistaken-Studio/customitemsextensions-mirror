@@ -65,21 +65,21 @@ namespace Mistaken.API.CustomItems
         public virtual string DisplayName { get; set; }
 
         /// <inheritdoc/>
-        protected override void UnsubscribeEvents()
-        {
-            base.UnsubscribeEvents();
-            Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
-            Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
-            Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
-        }
-
-        /// <inheritdoc/>
         protected override void SubscribeEvents()
         {
             base.SubscribeEvents();
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
+        }
+
+        /// <inheritdoc/>
+        protected override void UnsubscribeEvents()
+        {
+            base.UnsubscribeEvents();
+            Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
+            Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
+            Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
