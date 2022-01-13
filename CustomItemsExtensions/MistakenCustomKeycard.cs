@@ -10,7 +10,7 @@ using Interactables.Interobjects.DoorUtils;
 namespace Mistaken.API.CustomItems
 {
     /// <inheritdoc/>
-    public abstract class MistakenCustomKeycard : MistakenCustomItem, IMistakenCustomItem
+    public abstract class MistakenCustomKeycard : MistakenCustomItem
     {
         /// <summary>
         /// Gets or sets Keycards custom permissions.
