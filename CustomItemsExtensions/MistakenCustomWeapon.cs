@@ -60,9 +60,9 @@ namespace Mistaken.API.CustomItems
         public bool IsEquiped { get; private set; }
 
         /// <summary>
-        /// Gets or sets display name shown on player's GUI.
+        /// Gets display name shown on player's GUI.
         /// </summary>
-        public virtual string DisplayName { get; set; }
+        public virtual string DisplayName { get; }
 
         /// <inheritdoc/>
         protected override void SubscribeEvents()
