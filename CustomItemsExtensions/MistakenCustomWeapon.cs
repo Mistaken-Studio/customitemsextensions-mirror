@@ -101,6 +101,14 @@ namespace Mistaken.API.CustomItems
         {
         }
 
+        /// <inheritdoc/>
+        protected override void OnDropping(DroppingItemEventArgs ev)
+        {
+            this.IsEquiped = false;
+            ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
+            base.OnDropping(ev);
+        }
+
         private void OnInternalChangingAttachments(Events.EventArgs.ChangingAttachmentsEventArgs ev)
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
@@ -115,16 +123,17 @@ namespace Mistaken.API.CustomItems
 
         private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
         {
-            if (this.Check(ev.Player.CurrentItem))
+            if (this.Check(ev.NewItem))
+            {
+                this.IsEquiped = true;
+                if (this.DisplayName != null)
+                    ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, $"<color=yellow>Trzymasz</color> {this.DisplayName}");
+            }
+            else
             {
                 this.IsEquiped = false;
                 this.OnHiding(ev);
                 ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
-            }
-            else if (this.Check(ev.NewItem))
-            {
-                if (this.DisplayName != null)
-                    ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, $"<color=yellow>Trzymasz</color> {this.DisplayName}");
             }
         }
     }
