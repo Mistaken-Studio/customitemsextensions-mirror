@@ -7,13 +7,19 @@
 using System.ComponentModel;
 using Mistaken.Updater.Config;
 
-namespace Mistaken.API.CustomItemsExtensions
+namespace Mistaken.API.CustomItems
 {
     /// <inheritdoc/>
     public class Config : IAutoUpdatableConfig
     {
         /// <inheritdoc/>
         public bool IsEnabled { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether debug should be displayed.
+        /// </summary>
+        [Description("If true then debug will be displayed")]
+        public bool VerbouseOutput { get; set; }
 
         /// <inheritdoc/>
         [Description("Auto Update Settings")]
