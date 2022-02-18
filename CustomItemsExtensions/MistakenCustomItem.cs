@@ -4,6 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs;
@@ -86,6 +87,20 @@ namespace Mistaken.API.CustomItems
             this.IsEquiped = false;
             ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
             base.OnDropping(ev);
+        }
+
+        /// <inheritdoc/>
+        protected override void ShowSelectedMessage(Player player)
+        {
+            if (this.DisplayName is null)
+                base.ShowSelectedMessage(player);
+        }
+
+        /// <inheritdoc/>
+        protected override void ShowPickedUpMessage(Player player)
+        {
+            if (this.DisplayName is null)
+                base.ShowPickedUpMessage(player);
         }
 
         private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
