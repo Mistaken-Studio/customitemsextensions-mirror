@@ -71,7 +71,7 @@ namespace Mistaken.API.CustomItems
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
-            EventHandler.PlayingGunAudio += this.OnPlayingGunAudio;
+            EventHandler.PlayingGunAudio += this.OnInternalPlayingGunAudio;
         }
 
         /// <inheritdoc/>
@@ -81,7 +81,7 @@ namespace Mistaken.API.CustomItems
             Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
-            EventHandler.PlayingGunAudio -= this.OnPlayingGunAudio;
+            EventHandler.PlayingGunAudio -= this.OnInternalPlayingGunAudio;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
@@ -159,6 +159,12 @@ namespace Mistaken.API.CustomItems
                 this.OnHiding(ev);
                 ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
             }
+        }
+
+        private void OnInternalPlayingGunAudio(PlayingGunAudioEventArgs ev)
+        {
+            if (this.Check(Item.Get(ev.Firearm)))
+                this.OnPlayingGunAudio(ev);
         }
     }
 }
