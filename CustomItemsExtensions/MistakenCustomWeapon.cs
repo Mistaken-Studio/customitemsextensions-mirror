@@ -7,7 +7,6 @@
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
-using Exiled.Events.EventArgs;
 using Mistaken.API.Extensions;
 using Mistaken.API.GUI;
 using UnityEngine;
@@ -35,8 +34,8 @@ namespace Mistaken.API.CustomItems
         public static bool TrySpawn(MistakenCustomItems id, Vector3 position, out Pickup spawned)
             => TrySpawn((int)id, position, out spawned);
 
-        /// <inheritdoc cref="CustomItem.TryGive(Exiled.API.Features.Player, int, bool)"/>
-        public static bool TryGive(Exiled.API.Features.Player player, MistakenCustomItems id, bool displayMessage = true)
+        /// <inheritdoc cref="CustomItem.TryGive(Player, int, bool)"/>
+        public static bool TryGive(Player player, MistakenCustomItems id, bool displayMessage = true)
             => TryGive(player, (int)id, displayMessage);
 
         /// <inheritdoc/>
@@ -72,6 +71,7 @@ namespace Mistaken.API.CustomItems
             Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
+            EventHandler.PlayingGunAudio += this.OnInternalPlayingGunAudio;
         }
 
         /// <inheritdoc/>
@@ -81,6 +81,7 @@ namespace Mistaken.API.CustomItems
             Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
+            EventHandler.PlayingGunAudio -= this.OnInternalPlayingGunAudio;
         }
 
         /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
@@ -98,12 +99,20 @@ namespace Mistaken.API.CustomItems
         /// Fired when item is deequpied.
         /// </summary>
         /// <param name="ev">EventArgs.</param>
-        protected virtual void OnHiding(ChangingItemEventArgs ev)
+        protected virtual void OnHiding(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Fired when server is about to send GunAudioMessage.
+        /// </summary>
+        /// <param name="ev">EventArgs.</param>
+        protected virtual void OnPlayingGunAudio(PlayingGunAudioEventArgs ev)
         {
         }
 
         /// <inheritdoc/>
-        protected override void OnDropping(DroppingItemEventArgs ev)
+        protected override void OnDropping(Exiled.Events.EventArgs.DroppingItemEventArgs ev)
         {
             this.IsEquiped = false;
             ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
@@ -150,6 +159,12 @@ namespace Mistaken.API.CustomItems
                 this.OnHiding(ev);
                 ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
             }
+        }
+
+        private void OnInternalPlayingGunAudio(PlayingGunAudioEventArgs ev)
+        {
+            if (this.Check(Item.Get(ev.Firearm)))
+                this.OnPlayingGunAudio(ev);
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.CustomItems.API.Features;
+using HarmonyLib;
 
 namespace Mistaken.API.CustomItems
 {
@@ -35,6 +36,8 @@ namespace Mistaken.API.CustomItems
         public override void OnEnabled()
         {
             base.OnEnabled();
+            this.harmony = new Harmony("com.customitemsextensions.patch");
+            this.harmony.PatchAll();
             Mistaken.Events.Handlers.CustomEvents.LoadedPlugins += this.CustomEvents_LoadedPlugins;
         }
 
@@ -42,11 +45,14 @@ namespace Mistaken.API.CustomItems
         public override void OnDisabled()
         {
             base.OnDisabled();
+            this.harmony.UnpatchAll();
             Mistaken.Events.Handlers.CustomEvents.LoadedPlugins -= this.CustomEvents_LoadedPlugins;
             this.UnRegister();
         }
 
         private static readonly List<CustomItem> Registered = new List<CustomItem>();
+
+        private Harmony harmony;
 
         private void CustomEvents_LoadedPlugins() => this.Register();
 
