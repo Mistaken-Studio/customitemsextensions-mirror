@@ -5,8 +5,13 @@
 // -----------------------------------------------------------------------
 
 using Exiled.API.Features;
+using Exiled.API.Features.Attributes;
 using Exiled.API.Features.Items;
 using Exiled.CustomItems.API.Features;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace Mistaken.API.CustomItems
@@ -67,5 +72,26 @@ namespace Mistaken.API.CustomItems
         /// <inheritdoc cref="CustomItem.TryGive(Player, int, bool)"/>
         public static bool TryGive(this MistakenCustomItems id, Player player, bool displayMessage = true)
             => CustomItem.TryGive(player, (int)id, displayMessage);
+
+        /// <inheritdoc cref="CustomItem.RegisterItems(IEnumerable{Type}, bool)"/>
+        public static IEnumerable<CustomItem> RegisterItems(IEnumerable<Type> targetTypes)
+        {
+            List<CustomItem> registeredItems = new List<CustomItem>();
+            foreach (Type type in Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass))
+            {
+                if (!type.IsSubclassOf(typeof(CustomItem)) || type.GetCustomAttribute(typeof(CustomItemAttribute)) is null || !targetTypes.Contains(type))
+                    continue;
+
+                foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true))
+                {
+                    CustomItem customItem = (CustomItem)Activator.CreateInstance(type);
+                    customItem.Type = ((CustomItemAttribute)attribute).ItemType;
+                    customItem.GetType().GetMethod("TryRegister", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(customItem, new object[0]);
+                    registeredItems.Add(customItem);
+                }
+            }
+
+            return registeredItems;
+        }
     }
 }

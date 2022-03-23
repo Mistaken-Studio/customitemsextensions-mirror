@@ -53,7 +53,7 @@ namespace Mistaken.API.CustomItems
         private void Register()
         {
             var toRegister = Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass).Where(x => x.GetInterface(nameof(IMistakenCustomItem)) != null);
-            Registered.AddRange(CustomItem.RegisterItems(toRegister));
+            Registered.AddRange(Extensions.RegisterItems(toRegister));
             foreach (var item in Registered)
                 Log.Debug($"Successfully registered {item.Name} ({item.Id})", this.Config.VerbouseOutput);
 
