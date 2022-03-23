@@ -66,7 +66,7 @@ namespace Mistaken.API.CustomItems
                 return;
 
             if (this.KeycardPermissions.HasValue)
-                ev.IsAllowed = (this.KeycardPermissions & ev.Generator._requiredPermission) != 0;
+                ev.IsAllowed = (this.KeycardPermissions & (KeycardPermissions)ev.Generator.KeycardPermissions) != 0;
 
             this.OnUnlockingGenerator(ev);
         }
