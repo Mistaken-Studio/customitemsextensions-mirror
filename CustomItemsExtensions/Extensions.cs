@@ -73,21 +73,28 @@ namespace Mistaken.API.CustomItems
         public static bool TryGive(this MistakenCustomItems id, Player player, bool displayMessage = true)
             => CustomItem.TryGive(player, (int)id, displayMessage);
 
-        /// <inheritdoc cref="CustomItem.RegisterItems(IEnumerable{Type}, bool)"/>
-        public static IEnumerable<CustomItem> RegisterItems(IEnumerable<Type> targetTypes)
+        /// <inheritdoc cref="CustomItem.RegisterItems(bool, object)"/>
+        public static IEnumerable<CustomItem> RegisterItems()
         {
             List<CustomItem> registeredItems = new List<CustomItem>();
-            foreach (Type type in Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass))
+            foreach (Type type in Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass).Where(x => x.GetInterface(nameof(IMistakenCustomItem)) != null))
             {
-                if (!type.IsSubclassOf(typeof(CustomItem)) || type.GetCustomAttribute(typeof(CustomItemAttribute)) is null || !targetTypes.Contains(type))
+                if (!type.IsSubclassOf(typeof(CustomItem)) || type.GetCustomAttribute(typeof(CustomItemAttribute)) is null)
                     continue;
 
                 foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true))
                 {
-                    CustomItem customItem = (CustomItem)Activator.CreateInstance(type);
-                    customItem.Type = ((CustomItemAttribute)attribute).ItemType;
-                    customItem.GetType().GetMethod("TryRegister", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(customItem, new object[0]);
-                    registeredItems.Add(customItem);
+                    try
+                    {
+                        CustomItem customItem = (CustomItem)Activator.CreateInstance(type);
+                        customItem.Type = ((CustomItemAttribute)attribute).ItemType;
+                        customItem.GetType().GetMethod("TryRegister", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(customItem, new object[0]);
+                        registeredItems.Add(customItem);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex);
+                    }
                 }
             }
 

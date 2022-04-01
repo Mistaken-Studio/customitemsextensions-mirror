@@ -38,7 +38,7 @@ namespace Mistaken.API.CustomItems
             base.OnEnabled();
             this.harmony = new Harmony("com.customitemsextensions.patch");
             this.harmony.PatchAll();
-            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins += this.CustomEvents_LoadedPlugins;
+            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins += this.Register;
         }
 
         /// <inheritdoc/>
@@ -46,7 +46,7 @@ namespace Mistaken.API.CustomItems
         {
             base.OnDisabled();
             this.harmony.UnpatchAll();
-            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins -= this.CustomEvents_LoadedPlugins;
+            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins -= this.Register;
             this.UnRegister();
         }
 
@@ -54,31 +54,20 @@ namespace Mistaken.API.CustomItems
 
         private Harmony harmony;
 
-        private void CustomEvents_LoadedPlugins() => this.Register();
-
         private void Register()
         {
-            var toRegister = Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass).Where(x => x.GetInterface(nameof(IMistakenCustomItem)) != null);
-            Registered.AddRange(Extensions.RegisterItems(toRegister));
+            Registered.AddRange(Extensions.RegisterItems());
             foreach (var item in Registered)
                 Log.Debug($"Successfully registered {item.Name} ({item.Id})", this.Config.VerbouseOutput);
-
-            if (Registered.Count < toRegister.Count())
-                Log.Warn($"Successfully registered {Registered.Count}/{toRegister.Count()} CustomItems!");
         }
 
         private void UnRegister()
         {
-            short unregisteredCount = 0;
             foreach (var item in CustomItem.UnregisterItems(Registered))
             {
                 Log.Debug($"Successfully unregistered {item.Name} ({item.Id})", this.Config.VerbouseOutput);
                 Registered.Remove(item);
-                unregisteredCount++;
             }
-
-            if (Registered.Count > 0)
-                Log.Warn($"Successfully unregistered {Registered.Count}/{unregisteredCount} CustomItems!");
         }
     }
 }
