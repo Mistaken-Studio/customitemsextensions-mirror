@@ -27,7 +27,7 @@ namespace Mistaken.API.CustomItems
         public override string Prefix => "MCustomItemsExt";
 
         /// <inheritdoc/>
-        public override PluginPriority Priority => PluginPriority.Default;
+        public override PluginPriority Priority => PluginPriority.Default + 2;
 
         /// <inheritdoc/>
         public override Version RequiredExiledVersion => new Version(5, 0, 0);
