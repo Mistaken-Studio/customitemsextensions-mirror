@@ -1,17 +1,17 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Extensions.cs" company="Mistaken">
 // Copyright (c) Mistaken. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features;
-using Exiled.API.Features.Attributes;
-using Exiled.API.Features.Items;
-using Exiled.CustomItems.API.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Exiled.API.Features;
+using Exiled.API.Features.Attributes;
+using Exiled.API.Features.Items;
+using Exiled.CustomItems.API.Features;
 using UnityEngine;
 
 namespace Mistaken.API.CustomItems
