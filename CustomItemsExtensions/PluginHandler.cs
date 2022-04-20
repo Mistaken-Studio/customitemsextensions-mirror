@@ -27,10 +27,10 @@ namespace Mistaken.API.CustomItems
         public override string Prefix => "MCustomItemsExt";
 
         /// <inheritdoc/>
-        public override PluginPriority Priority => PluginPriority.Default;
+        public override PluginPriority Priority => PluginPriority.Default + 2;
 
         /// <inheritdoc/>
-        public override Version RequiredExiledVersion => new Version(4, 1, 2);
+        public override Version RequiredExiledVersion => new Version(5, 0, 0);
 
         /// <inheritdoc/>
         public override void OnEnabled()
@@ -38,7 +38,7 @@ namespace Mistaken.API.CustomItems
             base.OnEnabled();
             this.harmony = new Harmony("com.customitemsextensions.patch");
             this.harmony.PatchAll();
-            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins += this.CustomEvents_LoadedPlugins;
+            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins += this.Register;
         }
 
         /// <inheritdoc/>
@@ -46,7 +46,7 @@ namespace Mistaken.API.CustomItems
         {
             base.OnDisabled();
             this.harmony.UnpatchAll();
-            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins -= this.CustomEvents_LoadedPlugins;
+            Mistaken.Events.Handlers.CustomEvents.LoadedPlugins -= this.Register;
             this.UnRegister();
         }
 
@@ -54,37 +54,19 @@ namespace Mistaken.API.CustomItems
 
         private Harmony harmony;
 
-        private void CustomEvents_LoadedPlugins() => this.Register();
-
         private void Register()
         {
-            foreach (var type in Exiled.Loader.Loader.Plugins.Where(x => x.Config.IsEnabled).SelectMany(x => x.Assembly.GetTypes()).Where(x => !x.IsAbstract && x.IsClass))
-            {
-                if (type.GetInterfaces().Any(x => x == typeof(IMistakenCustomItem)))
-                {
-                    var role = Activator.CreateInstance(type, true) as CustomItem;
-                    if (role.TryRegister())
-                    {
-                        Log.Debug($"Successfully registered {role.Name} ({role.Id})", this.Config.VerbouseOutput);
-                        Registered.Add(role);
-                    }
-                    else
-                        Log.Warn($"Failed to register {role.Name} ({role.Id})");
-                }
-            }
+            Registered.AddRange(Extensions.RegisterItems());
+            foreach (var item in Registered)
+                Log.Debug($"Successfully registered {item.Name} ({item.Id})", this.Config.VerbouseOutput);
         }
 
         private void UnRegister()
         {
-            foreach (var role in Registered.ToArray())
+            foreach (var item in CustomItem.UnregisterItems(Registered))
             {
-                if (role.TryUnregister())
-                {
-                    Log.Debug($"Successfully unregistered {role.Name} ({role.Id})", this.Config.VerbouseOutput);
-                    Registered.Remove(role);
-                }
-                else
-                    Log.Warn($"Failed to unregister {role.Name} ({role.Id})");
+                Log.Debug($"Successfully unregistered {item.Name} ({item.Id})", this.Config.VerbouseOutput);
+                Registered.Remove(item);
             }
         }
     }

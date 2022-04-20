@@ -68,7 +68,7 @@ namespace Mistaken.API.CustomItems
         protected override void SubscribeEvents()
         {
             base.SubscribeEvents();
-            Events.Handlers.CustomEvents.ChangingAttachments += this.OnInternalChangingAttachments;
+            Exiled.Events.Handlers.Item.ChangingAttachments += this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon += this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem += this.OnInternalChangingItem;
             EventHandler.PlayingGunAudio += this.OnInternalPlayingGunAudio;
@@ -78,14 +78,14 @@ namespace Mistaken.API.CustomItems
         protected override void UnsubscribeEvents()
         {
             base.UnsubscribeEvents();
-            Events.Handlers.CustomEvents.ChangingAttachments -= this.OnInternalChangingAttachments;
+            Exiled.Events.Handlers.Item.ChangingAttachments -= this.OnInternalChangingAttachments;
             Exiled.Events.Handlers.Player.UnloadingWeapon -= this.OnInternalUnloadingWeapon;
             Exiled.Events.Handlers.Player.ChangingItem -= this.OnInternalChangingItem;
             EventHandler.PlayingGunAudio -= this.OnInternalPlayingGunAudio;
         }
 
-        /// <inheritdoc cref="Events.Handlers.CustomEvents.ChangingAttachments"/>
-        protected virtual void OnChangingAttachments(Events.EventArgs.ChangingAttachmentsEventArgs ev)
+        /// <inheritdoc cref="Exiled.Events.Handlers.Item.ChangingAttachments"/>
+        protected virtual void OnChangingAttachments(Exiled.Events.EventArgs.ChangingAttachmentsEventArgs ev)
         {
             ev.IsAllowed = this.AllowChangingAttachments;
         }
@@ -133,7 +133,7 @@ namespace Mistaken.API.CustomItems
                 base.ShowPickedUpMessage(player);
         }
 
-        private void OnInternalChangingAttachments(Events.EventArgs.ChangingAttachmentsEventArgs ev)
+        private void OnInternalChangingAttachments(Exiled.Events.EventArgs.ChangingAttachmentsEventArgs ev)
         {
             if (this.TrackedSerials.Contains(ev.Firearm.Serial))
                 this.OnChangingAttachments(ev);
