@@ -80,7 +80,7 @@ namespace Mistaken.API.CustomItems
         /// <param name="ev">EventArgs.</param>
         protected virtual void OnHiding(ChangingItemEventArgs ev)
         {
-            ClearGui(ev.Player);
+            this.ClearGui(ev.Player);
         }
 
         /// <inheritdoc/>
@@ -88,31 +88,31 @@ namespace Mistaken.API.CustomItems
         {
             // this.IsEquiped = false;
             // ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
-            ClearGui(ev.Player);
+            this.ClearGui(ev.Player);
             base.OnDropping(ev);
         }
 
         protected override void OnOwnerChangingRole(OwnerChangingRoleEventArgs ev)
         {
-            ClearGui(ev.Player);
+            this.ClearGui(ev.Player);
             base.OnOwnerChangingRole(ev);
         }
 
         protected override void OnOwnerDying(OwnerDyingEventArgs ev)
         {
-            ClearGui(ev.Target);
+            this.ClearGui(ev.Target);
             base.OnOwnerDying(ev);
         }
 
         protected override void OnOwnerEscaping(OwnerEscapingEventArgs ev)
         {
-            ClearGui(ev.Player);
+            this.ClearGui(ev.Player);
             base.OnOwnerEscaping(ev);
         }
 
         protected override void OnOwnerHandcuffing(OwnerHandcuffingEventArgs ev)
         {
-            ClearGui(ev.Target);
+            this.ClearGui(ev.Target);
             base.OnOwnerHandcuffing(ev);
         }
 
