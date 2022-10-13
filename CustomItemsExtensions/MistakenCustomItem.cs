@@ -6,6 +6,7 @@
 
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
+using Exiled.CustomItems.API.EventArgs;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs;
 using Mistaken.API.Extensions;
@@ -79,14 +80,40 @@ namespace Mistaken.API.CustomItems
         /// <param name="ev">EventArgs.</param>
         protected virtual void OnHiding(ChangingItemEventArgs ev)
         {
+            ClearGui(ev.Player);
         }
 
         /// <inheritdoc/>
         protected override void OnDropping(DroppingItemEventArgs ev)
         {
-            this.IsEquiped = false;
-            ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
+            // this.IsEquiped = false;
+            // ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
+            ClearGui(ev.Player);
             base.OnDropping(ev);
+        }
+
+        protected override void OnOwnerChangingRole(OwnerChangingRoleEventArgs ev)
+        {
+            ClearGui(ev.Player);
+            base.OnOwnerChangingRole(ev);
+        }
+
+        protected override void OnOwnerDying(OwnerDyingEventArgs ev)
+        {
+            ClearGui(ev.Target);
+            base.OnOwnerDying(ev);
+        }
+
+        protected override void OnOwnerEscaping(OwnerEscapingEventArgs ev)
+        {
+            ClearGui(ev.Player);
+            base.OnOwnerEscaping(ev);
+        }
+
+        protected override void OnOwnerHandcuffing(OwnerHandcuffingEventArgs ev)
+        {
+            ClearGui(ev.Target);
+            base.OnOwnerHandcuffing(ev);
         }
 
         /// <inheritdoc/>
@@ -101,6 +128,12 @@ namespace Mistaken.API.CustomItems
         {
             if (this.DisplayName is null)
                 base.ShowPickedUpMessage(player);
+        }
+
+        private void ClearGui(Player player)
+        {
+            this.IsEquiped = false;
+            player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
         }
 
         private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
