@@ -26,6 +26,7 @@ namespace Mistaken.API.CustomItems
             customItem = null;
             if (!TryGet((int)id, out CustomItem customItem1))
                 return false;
+
             customItem = customItem1 as MistakenCustomWeapon;
             return true;
         }
