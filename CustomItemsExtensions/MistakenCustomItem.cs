@@ -28,6 +28,7 @@ namespace Mistaken.API.CustomItems
             customItem = null;
             if (!TryGet((int)id, out CustomItem customItem1))
                 return false;
+
             customItem = customItem1 as MistakenCustomItem;
             return true;
         }
@@ -36,8 +37,8 @@ namespace Mistaken.API.CustomItems
         public static bool TrySpawn(MistakenCustomItems id, Vector3 position, out Pickup spawned)
             => TrySpawn((int)id, position, out spawned);
 
-        /// <inheritdoc cref="CustomItem.TryGive(Exiled.API.Features.Player, int, bool)"/>
-        public static bool TryGive(Exiled.API.Features.Player player, MistakenCustomItems id, bool displayMessage = true)
+        /// <inheritdoc cref="CustomItem.TryGive(Player, int, bool)"/>
+        public static bool TryGive(Player player, MistakenCustomItems id, bool displayMessage = true)
             => TryGive(player, (int)id, displayMessage);
 
         /// <inheritdoc/>
@@ -86,30 +87,32 @@ namespace Mistaken.API.CustomItems
         /// <inheritdoc/>
         protected override void OnDropping(DroppingItemEventArgs ev)
         {
-            // this.IsEquiped = false;
-            // ev.Player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
             this.ClearGui(ev.Player);
             base.OnDropping(ev);
         }
 
+        /// <inheritdoc/>
         protected override void OnOwnerChangingRole(OwnerChangingRoleEventArgs ev)
         {
             this.ClearGui(ev.Player);
             base.OnOwnerChangingRole(ev);
         }
 
+        /// <inheritdoc/>
         protected override void OnOwnerDying(OwnerDyingEventArgs ev)
         {
             this.ClearGui(ev.Target);
             base.OnOwnerDying(ev);
         }
 
+        /// <inheritdoc/>
         protected override void OnOwnerEscaping(OwnerEscapingEventArgs ev)
         {
             this.ClearGui(ev.Player);
             base.OnOwnerEscaping(ev);
         }
 
+        /// <inheritdoc/>
         protected override void OnOwnerHandcuffing(OwnerHandcuffingEventArgs ev)
         {
             this.ClearGui(ev.Target);
@@ -136,7 +139,7 @@ namespace Mistaken.API.CustomItems
             player.SetGUI($"CI_{this.Id}_HOLDING", PseudoGUIPosition.BOTTOM, null);
         }
 
-        private void OnInternalChangingItem(Exiled.Events.EventArgs.ChangingItemEventArgs ev)
+        private void OnInternalChangingItem(ChangingItemEventArgs ev)
         {
             if (this.Check(ev.NewItem))
             {
